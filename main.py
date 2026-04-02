@@ -2,6 +2,7 @@ import json
 import os
 import subprocess
 import re
+from urllib.parse import quote
 
 from ulauncher.api.client.Extension import Extension
 from ulauncher.api.client.EventListener import EventListener
@@ -37,10 +38,13 @@ def parse_idx(idx_path):
     with open(idx_path, "rb") as f:
         data = f.read()
     i = 0
-    while i < len(data):
-        end = data.index(b"\x00", i)
-        words.append(data[i:end].decode("utf-8", errors="replace"))
-        i = end + 1 + 8  # null + 4-byte offset + 4-byte size
+    try:
+        while i < len(data):
+            end = data.index(b"\x00", i)
+            words.append(data[i:end].decode("utf-8", errors="replace"))
+            i = end + 1 + 8  # null + 4-byte offset + 4-byte size
+    except ValueError:
+        pass
     return words
 
 
@@ -75,7 +79,7 @@ def find_near_misses(word, word_set):
 
 
 def sdcv_json(word):
-    """Fetch definition for an exact word via sdcv."""
+    """Fetch definition for a word via sdcv (case-insensitive exact match)."""
     try:
         result = subprocess.run(
             ["sdcv", "-n", "-j", "-e", "--utf8-output", word],
@@ -84,7 +88,21 @@ def sdcv_json(word):
     except FileNotFoundError:
         return None
     if result.returncode != 0 or not result.stdout.strip():
-        return []
+        # sdcv -e is case-sensitive; retry without -e and filter
+        try:
+            result = subprocess.run(
+                ["sdcv", "-n", "-j", "--utf8-output", word],
+                capture_output=True, text=True, timeout=5,
+            )
+        except FileNotFoundError:
+            return None
+        if result.returncode != 0 or not result.stdout.strip():
+            return []
+        try:
+            entries = json.loads(result.stdout)
+        except json.JSONDecodeError:
+            return []
+        return [e for e in entries if e.get("word", "").lower() == word.lower()]
     try:
         return json.loads(result.stdout)
     except json.JSONDecodeError:
@@ -235,7 +253,7 @@ class QueryListener(EventListener):
                 description="View full entry in browser",
                 highlightable=False,
                 on_enter=OpenUrlAction(
-                    f"https://en.wiktionary.org/wiki/{matched_word}"
+                    f"https://en.wiktionary.org/wiki/{quote(matched_word)}"
                 ),
             ))
 
@@ -274,8 +292,7 @@ class QueryListener(EventListener):
         # skipping any fzf results already covered by near misses
         seen = set()
         ordered = []
-        near_set = {w.lower() for w in near_misses}
-        # Near misses that fzf also ranks highly go first
+        # Near misses first (typo corrections), then fzf results
         for w in near_misses:
             wl = w.lower()
             if wl not in seen:
