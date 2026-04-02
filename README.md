@@ -53,10 +53,7 @@ Dicky works with any dictionary in [StarDict format](https://github.com/huzheng0
 
 #### Free dictionaries
 
-**GCIDE (GNU Collaborative International Dictionary of English)** - free, comprehensive English dictionary:
-
-- Fedora: `sudo dnf install stardict-dic-en` (if available), or download the StarDict files
-- Available from [dict.org mirrors](https://ftp.dict.org/pub/dict/)
+**GCIDE (GNU Collaborative International Dictionary of English)** - free, comprehensive English dictionary. Download the StarDict files from [dict.org mirrors](https://ftp.dict.org/pub/dict/).
 
 **Wiktionary exports** - community-maintained, regularly updated:
 
@@ -75,7 +72,7 @@ StarDict versions of well-known commercial dictionaries can be found online. Dic
 
 | Language | Dictionaries |
 |---|---|
-| English (British) | Chambers, Collins, Oxford, Longman, Cambridge |
+| English | Chambers, Collins, Oxford, Longman, Cambridge |
 | English (American) | Merriam-Webster, American Heritage |
 | Spanish | Collins Spanish-English, Oxford Spanish-English, VOX |
 | Chinese | Oxford Chinese-English, Xiandai Hanyu Cidian |
