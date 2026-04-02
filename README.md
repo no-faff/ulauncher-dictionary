@@ -49,17 +49,40 @@ sudo pacman -S sdcv fzf
 
 ### 2. Install a dictionary
 
-Dicky works with any dictionary in [StarDict format](https://github.com/huzheng001/stardict-3/blob/master/dict/doc/StarDictFileFormat). You need at least one.
+Dicky works with any dictionary in [StarDict format](https://github.com/huzheng001/stardict-3/blob/master/dict/doc/StarDictFileFormat). You need at least one. Install as many as you like and Dicky will search them all.
 
-**GCIDE (GNU Collaborative International Dictionary of English)** is free and comprehensive:
+#### Free dictionaries
+
+**GCIDE (GNU Collaborative International Dictionary of English)** - free, comprehensive English dictionary:
 
 - Fedora: `sudo dnf install stardict-dic-en` (if available), or download the StarDict files
-- The GCIDE StarDict package is available from [dict.org mirrors](https://ftp.dict.org/pub/dict/)
+- Available from [dict.org mirrors](https://ftp.dict.org/pub/dict/)
 
-**Wiktionary exports** are another good free option. Community-maintained StarDict builds of Wiktionary data are available from:
+**Wiktionary exports** - community-maintained, regularly updated:
 
-- [dictinfo.com](https://www.dictinfo.com/) (regularly updated English Wiktionary in StarDict format)
+- [dictinfo.com](https://www.dictinfo.com/) (English Wiktionary in StarDict format)
 - [Vuizur/Wiktionary-Dictionaries](https://github.com/Vuizur/Wiktionary-Dictionaries) on GitHub
+
+**CC-CEDICT** - the standard free Chinese-English dictionary, widely available in StarDict format.
+
+**JMDict/EDICT** - the standard free Japanese-English dictionary.
+
+**FreeDict** - open-source bilingual dictionaries for many language pairs at [freedict.org](https://freedict.org/).
+
+#### Commercial dictionaries
+
+StarDict versions of well-known commercial dictionaries can be found online. Dicky works with all of them. Some popular ones people use:
+
+| Language | Dictionaries |
+|---|---|
+| English (British) | Chambers, Collins, Oxford, Longman, Cambridge |
+| English (American) | Merriam-Webster, American Heritage |
+| Spanish | Collins Spanish-English, Oxford Spanish-English, VOX |
+| Chinese | Oxford Chinese-English, Xiandai Hanyu Cidian |
+| French | Le Petit Robert, Collins Robert, Larousse |
+| German | Duden, Langenscheidt, PONS |
+
+#### Where to put them
 
 Place dictionary files in `~/.stardict/dic/`. Each dictionary lives in its own subfolder containing `.ifo`, `.idx` and `.dict` (or `.dict.dz`) files.
 
