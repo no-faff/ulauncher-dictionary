@@ -126,15 +126,15 @@ def extract_header(definition_text):
             break
 
     word_class = ""
+    class_pattern = re.compile(
+        r"\b(noun|verb|adjective|adverb|pronoun|preposition|conjunction"
+        r"|interjection|transitive verb|intransitive verb|prefix"
+        r"|suffix|combining form)\b"
+    )
     for line in lines[:5]:
-        stripped = line.strip().lower()
-        if stripped in (
-            "noun", "verb", "adjective", "adverb", "pronoun",
-            "preposition", "conjunction", "interjection",
-            "transitive verb", "intransitive verb", "prefix",
-            "suffix", "combining form",
-        ):
-            word_class = line.strip()
+        match = class_pattern.search(line.lower())
+        if match:
+            word_class = match.group(1)
             break
 
     return pronunciation, word_class
