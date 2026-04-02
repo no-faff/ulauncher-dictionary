@@ -87,26 +87,29 @@ def sdcv_json(word):
         )
     except FileNotFoundError:
         return None
-    if result.returncode != 0 or not result.stdout.strip():
-        # sdcv -e is case-sensitive; retry without -e and filter
-        try:
-            result = subprocess.run(
-                ["sdcv", "-n", "-j", "--utf8-output", word],
-                capture_output=True, text=True, timeout=5,
-            )
-        except FileNotFoundError:
-            return None
-        if result.returncode != 0 or not result.stdout.strip():
-            return []
-        try:
-            entries = json.loads(result.stdout)
-        except json.JSONDecodeError:
-            return []
-        return [e for e in entries if e.get("word", "").lower() == word.lower()]
+    entries = []
     try:
-        return json.loads(result.stdout)
+        if result.stdout.strip():
+            entries = json.loads(result.stdout)
+    except json.JSONDecodeError:
+        pass
+    if entries:
+        return entries
+    # sdcv -e is case-sensitive; retry without -e and filter
+    try:
+        result = subprocess.run(
+            ["sdcv", "-n", "-j", "--utf8-output", word],
+            capture_output=True, text=True, timeout=5,
+        )
+    except FileNotFoundError:
+        return None
+    if not result.stdout.strip():
+        return []
+    try:
+        entries = json.loads(result.stdout)
     except json.JSONDecodeError:
         return []
+    return [e for e in entries if e.get("word", "").lower() == word.lower()]
 
 
 def extract_header(definition_text):
